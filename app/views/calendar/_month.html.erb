@@ -1,0 +1,28 @@
+<section class="cal-month" aria-label="<%= l(grid.month, format: :month) %>">
+  <div class="cal-weekdays">
+    <% grid.weekday_indexes.each do |index| %>
+      <span><%= t("date.abbr_day_names")[index] %></span>
+    <% end %>
+  </div>
+  <div class="cal-grid">
+    <% grid.cells.each do |cell| %>
+      <% pills, extra = cell.marks %>
+      <%= link_to cal_path(cell.date), class: "cal-cell#{" is-other" unless cell.in_month}#{" is-today" if cell.today}#{" is-selected" if cell.selected}#{" has-items" unless cell.empty?}", aria: { current: (cell.today ? "date" : nil) } do %>
+        <span class="cal-num"><%= cell.date.day %></span>
+        <span class="cal-dots" aria-hidden="true">
+          <% pills.each do |kind, _label| %>
+            <i class="dot <%= kind %>"></i>
+          <% end %>
+        </span>
+        <span class="cal-pills">
+          <% pills.each do |kind, label| %>
+            <span class="pill <%= kind %>"><%= label %></span>
+          <% end %>
+          <% if extra > 0 %>
+            <span class="pill more"><%= t("app.overflow", count: extra) %></span>
+          <% end %>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+</section>

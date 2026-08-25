@@ -1,0 +1,209 @@
+pt:
+  pwa:
+    description: "Um calendário pessoal calmo como PWA."
+  titles:
+    app: "KuraCalendar"
+    login: "Entrar · KuraCalendar"
+    signup: "Criar conta · KuraCalendar"
+    password: "Mudar senha · KuraCalendar"
+    lock: "Desbloquear · KuraCalendar"
+  auth:
+    sign_in: "Entrar"
+    sign_in_lede: "Seu calendário fica neste servidor. Entre para abri-lo."
+    email: "Email"
+    password: "Senha"
+    confirm_password: "Confirmar senha"
+    current_password: "Senha atual"
+    new_password: "Nova senha"
+    confirm_new_password: "Confirmar nova senha"
+    change_password: "Mudar senha"
+    change_password_lede: "A senha nova vale para entrar e para desbloquear o app."
+    password_changed: "Senha alterada."
+    no_account: "Sem conta?"
+    create_one: "Criar uma"
+    create_account: "Criar conta"
+    signup_lede: "Não existe recuperação de senha. Se perder, peça a quem administra o servidor."
+    have_account: "Já tem conta?"
+    theme: "Tema"
+    too_many: "Muitas tentativas. Espere um pouco."
+    signup_closed: "Novas contas estão desligadas neste servidor."
+  app:
+    unlock: "Desbloquear"
+    unlock_lede: "Conectado como %{email}. Digite a senha para ver o calendário."
+    lock: "Bloquear"
+    auto_lock_on: "Ligar bloqueio automático"
+    auto_lock_off: "Desligar bloqueio automático"
+    sign_out: "Sair"
+    cancel: "Cancelar"
+    delete: "Apagar"
+    save: "Salvar"
+    more: "Mais"
+    today: "Hoje"
+    previous_month: "Mês anterior"
+    next_month: "Próximo mês"
+    new_item: "Adicionar"
+    new_event: "Evento"
+    new_birthday: "Aniversário"
+    edit_event: "Editar evento"
+    edit_birthday: "Editar aniversário"
+    empty_day: "Nada neste dia."
+    all_day: "Dia inteiro"
+    title: "Título"
+    notes: "Notas"
+    starts: "Começa"
+    ends: "Termina"
+    start_time: "Início"
+    end_time: "Fim"
+    name: "Nome"
+    month: "Mês"
+    day: "Dia"
+    year: "Ano"
+    year_hint: "Opcional. Serve para mostrar a idade."
+    holidays: "Feriados"
+    holidays_lede: "Escolha os países cujos feriados você quer no mês."
+    holidays_on: "Mostrar feriados"
+    holidays_off: "Esconder feriados"
+    export: "Exportar"
+    import: "Importar"
+    import_done: "Importados %{count} itens."
+    import_invalid: "Esse arquivo não é um export válido do KuraCalendar."
+    offline: "Você está offline. Pode abrir meses que já viu, mas não salvar."
+    overflow: "+%{count}"
+  countries:
+    BR: "Brasil"
+    US: "Estados Unidos"
+    SI: "Eslovênia"
+    CZ: "Chéquia"
+  holidays:
+    br:
+      new_year: "Confraternização Universal"
+      carnival: "Carnaval"
+      good_friday: "Sexta-feira Santa"
+      easter: "Páscoa"
+      tiradentes: "Tiradentes"
+      labor: "Dia do Trabalho"
+      corpus_christi: "Corpus Christi"
+      independence: "Independência"
+      aparecida: "Nossa Senhora Aparecida"
+      finados: "Finados"
+      republic: "Proclamação da República"
+      black_awareness: "Consciência Negra"
+      christmas: "Natal"
+    us:
+      new_year: "Ano Novo"
+      mlk: "Martin Luther King Jr."
+      presidents: "Presidents' Day"
+      memorial: "Memorial Day"
+      juneteenth: "Juneteenth"
+      independence: "Independência dos EUA"
+      labor: "Labor Day"
+      columbus: "Columbus Day"
+      veterans: "Veterans Day"
+      thanksgiving: "Ação de Graças"
+      christmas: "Natal"
+    si:
+      new_year: "Ano Novo"
+      new_year_2: "Ano Novo (2º dia)"
+      preseren: "Dia de Prešeren"
+      easter: "Páscoa"
+      easter_monday: "Segunda-feira de Páscoa"
+      uprising: "Dia da Revolta contra a Ocupação"
+      labor: "Dia do Trabalho"
+      labor_2: "Dia do Trabalho (2º dia)"
+      pentecost: "Pentecostes"
+      statehood: "Dia da Estatalidade"
+      assumption: "Assunção"
+      reformation: "Dia da Reforma"
+      all_saints: "Todos os Santos"
+      christmas: "Natal"
+      independence: "Independência e Unidade"
+    cz:
+      new_year: "Ano Novo"
+      good_friday: "Sexta-feira Santa"
+      easter_monday: "Segunda-feira de Páscoa"
+      labor: "Dia do Trabalho"
+      liberation: "Dia da Libertação"
+      cyril_methodius: "Cirilo e Metódio"
+      jan_hus: "Jan Hus"
+      statehood: "Dia da Estatalidade Tcheca"
+      czechoslovak: "Estado Checoslovaco Independente"
+      freedom: "Luta pela Liberdade e Democracia"
+      christmas_eve: "Véspera de Natal"
+      christmas: "Natal"
+      st_stephen: "Santo Estêvão"
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%d de %B de %Y"
+      short: "%d/%m"
+      month: "%B de %Y"
+      day: "%A, %-d de %B"
+    abbr_day_names: [Dom, Seg, Ter, Qua, Qui, Sex, Sáb]
+    day_names: [domingo, segunda-feira, terça-feira, quarta-feira, quinta-feira, sexta-feira, sábado]
+    month_names: [~, janeiro, fevereiro, março, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro]
+    abbr_month_names: [~, jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez]
+  js:
+    invalid_credentials: "Email ou senha inválidos."
+    wrong_password: "Senha incorreta."
+    theme_system: "Tema: sistema"
+    theme_light: "Tema: claro"
+    theme_dark: "Tema: escuro"
+    theme_switch: "clique para alternar"
+    delete_event_confirm: "Apagar este evento?"
+    delete_birthday_confirm: "Apagar este aniversário?"
+  helpers:
+    submit:
+      event:
+        create: "Adicionar evento"
+        update: "Salvar"
+      birthday:
+        create: "Adicionar aniversário"
+        update: "Salvar"
+  activerecord:
+    attributes:
+      user:
+        password: "Senha"
+        password_confirmation: "Confirmação da senha"
+      event:
+        title: "Título"
+        body: "Notas"
+        starts_on: "Início"
+        ends_on: "Término"
+        starts_at: "Horário inicial"
+        ends_at: "Horário final"
+      birthday:
+        name: "Nome"
+        month: "Mês"
+        day: "Dia"
+        year: "Ano"
+        body: "Notas"
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              too_short: "é muito curta (mínimo de %{count} caracteres)"
+              blank: "não pode ficar em branco"
+            password_confirmation:
+              confirmation: "não confere com a senha"
+        event:
+          attributes:
+            title:
+              blank: "não pode ficar em branco"
+            starts_at:
+              blank: "não pode ficar em branco"
+            ends_on:
+              before_start: "não pode ser antes do início"
+              too_long: "não pode durar mais de um ano"
+            ends_at:
+              before_start: "não pode ser antes do horário inicial"
+            base:
+              too_many: "Dois mil eventos bastam."
+        birthday:
+          attributes:
+            name:
+              blank: "não pode ficar em branco"
+            day:
+              invalid: "não é um dia real nesse mês"
+            base:
+              too_many: "Quinhentos aniversários bastam."

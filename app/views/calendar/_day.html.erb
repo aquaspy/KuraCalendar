@@ -1,0 +1,72 @@
+<aside class="cal-day">
+  <div class="day-head">
+    <h2><%= l(cell.date, format: :day) %></h2>
+    <div class="day-add">
+      <button type="button" class="text-btn" data-action="composer#newEvent" data-date="<%= cell.date.iso8601 %>" data-heading="<%= t("app.new_event") %>"><%= t("app.new_event") %></button>
+      <button type="button" class="text-btn" data-action="composer#newBirthday" data-month="<%= cell.date.month %>" data-day="<%= cell.date.day %>" data-heading="<%= t("app.new_birthday") %>"><%= t("app.new_birthday") %></button>
+    </div>
+  </div>
+
+  <% if cell.empty? %>
+    <p class="empty-day"><%= t("app.empty_day") %></p>
+  <% else %>
+    <ul class="day-list">
+      <% cell.holidays.each do |holiday| %>
+        <li class="day-item is-holiday">
+          <span class="item-kind"><%= holiday_name(holiday) %></span>
+        </li>
+      <% end %>
+      <% cell.birthdays.each do |birthday| %>
+        <li class="day-item is-birthday">
+          <%= tag.button type: "button", class: "item-main", data: {
+            action: "composer#newBirthday",
+            id: birthday.id,
+            name: birthday.name,
+            month: birthday.month,
+            day: birthday.day,
+            year: birthday.year,
+            body: birthday.body,
+            heading: t("app.edit_birthday")
+          } do %>
+            <span class="item-kind"><%= birthday.label_on(cell.date) %></span>
+            <% if birthday.body.present? %><span class="item-note"><%= birthday.body %></span><% end %>
+          <% end %>
+          <%= tag.button type: "button", class: "item-del", aria: { label: t("app.delete") }, data: {
+            action: "confirm#open",
+            url: birthday_path(birthday),
+            message: t("js.delete_birthday_confirm")
+          } do %>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 5h9M6.2 5V3.8h3.6V5M5.2 5v7.2A1 1 0 0 0 6.2 13.2h3.6a1 1 0 0 0 1-1V5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <% end %>
+        </li>
+      <% end %>
+      <% cell.events.sort_by { |event| [ event.all_day? ? 0 : 1, clock_value(event.starts_at).to_s, event.id ] }.each do |event| %>
+        <li class="day-item is-event">
+          <%= tag.button type: "button", class: "item-main", data: {
+            action: "composer#newEvent",
+            id: event.id,
+            title: event.title,
+            body: event.body,
+            all_day: event.all_day?,
+            starts_on: event.starts_on.iso8601,
+            ends_on: event.ends_on.iso8601,
+            starts_at: clock_value(event.starts_at),
+            ends_at: clock_value(event.ends_at),
+            heading: t("app.edit_event")
+          } do %>
+            <% if event.time_label %><span class="item-time"><%= event.time_label %></span><% end %>
+            <span class="item-kind"><%= event.title %></span>
+            <% if event.body.present? %><span class="item-note"><%= event.body %></span><% end %>
+          <% end %>
+          <%= tag.button type: "button", class: "item-del", aria: { label: t("app.delete") }, data: {
+            action: "confirm#open",
+            url: event_path(event),
+            message: t("js.delete_event_confirm")
+          } do %>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 5h9M6.2 5V3.8h3.6V5M5.2 5v7.2A1 1 0 0 0 6.2 13.2h3.6a1 1 0 0 0 1-1V5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</aside>

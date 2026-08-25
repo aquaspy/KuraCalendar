@@ -1,0 +1,112 @@
+<dialog class="confirm-dialog choice-dialog" data-composer-target="choice" data-action="click->composer#backdrop">
+  <p class="dialog-heading"><%= t("app.new_item") %></p>
+  <div class="choice-actions">
+    <button type="button" class="btn-dialog primary" data-action="composer#newEvent" data-date="<%= cell.date.iso8601 %>" data-heading="<%= t("app.new_event") %>"><%= t("app.new_event") %></button>
+    <button type="button" class="btn-dialog primary" data-action="composer#newBirthday" data-month="<%= cell.date.month %>" data-day="<%= cell.date.day %>" data-heading="<%= t("app.new_birthday") %>"><%= t("app.new_birthday") %></button>
+  </div>
+  <div class="confirm-actions">
+    <button type="button" class="btn-dialog" data-action="composer#closeChoice"><%= t("app.cancel") %></button>
+  </div>
+</dialog>
+
+<dialog class="confirm-dialog form-dialog" data-composer-target="eventBox" data-action="click->composer#backdrop">
+  <p class="dialog-heading" data-composer-target="eventHeading"><%= t("app.new_event") %></p>
+  <%= form_with url: events_path, class: "auth-form", data: { composer_target: "eventForm" } do %>
+    <input type="hidden" name="_method" value="post" data-composer-target="eventMethod">
+    <label><%= t("app.title") %>
+      <input type="text" name="event[title]" required maxlength="200" data-composer-target="eventTitle">
+    </label>
+    <label class="check-row">
+      <input type="hidden" name="event[all_day]" value="0">
+      <input type="checkbox" name="event[all_day]" value="1" checked data-composer-target="eventAllDay" data-action="composer#toggleTimes">
+      <span><%= t("app.all_day") %></span>
+    </label>
+    <label><%= t("app.starts") %>
+      <input type="date" name="event[starts_on]" required data-composer-target="eventStartsOn">
+    </label>
+    <label><%= t("app.ends") %>
+      <input type="date" name="event[ends_on]" data-composer-target="eventEndsOn">
+    </label>
+    <div class="time-row" data-composer-target="eventTimes" hidden>
+      <label><%= t("app.start_time") %>
+        <input type="time" name="event[starts_at]" data-composer-target="eventStartsAt">
+      </label>
+      <label><%= t("app.end_time") %>
+        <input type="time" name="event[ends_at]" data-composer-target="eventEndsAt">
+      </label>
+    </div>
+    <label><%= t("app.notes") %>
+      <textarea name="event[body]" rows="3" data-composer-target="eventBody"></textarea>
+    </label>
+    <div class="confirm-actions">
+      <button type="button" class="btn-dialog" data-action="composer#closeEvent"><%= t("app.cancel") %></button>
+      <button type="submit" class="btn-dialog primary"><%= t("app.save") %></button>
+    </div>
+  <% end %>
+  <button type="button" class="btn-dialog danger dialog-delete" hidden data-composer-target="eventDelete" data-action="confirm#open" data-message="<%= t("js.delete_event_confirm") %>"><%= t("app.delete") %></button>
+</dialog>
+
+<dialog class="confirm-dialog form-dialog" data-composer-target="birthdayBox" data-action="click->composer#backdrop">
+  <p class="dialog-heading" data-composer-target="birthdayHeading"><%= t("app.new_birthday") %></p>
+  <%= form_with url: birthdays_path, class: "auth-form", data: { composer_target: "birthdayForm" } do %>
+    <input type="hidden" name="_method" value="post" data-composer-target="birthdayMethod">
+    <input type="hidden" name="return_year" value="<%= cell.date.year %>">
+    <label><%= t("app.name") %>
+      <input type="text" name="birthday[name]" required maxlength="200" data-composer-target="birthdayName">
+    </label>
+    <div class="time-row">
+      <label><%= t("app.month") %>
+        <select name="birthday[month]" required data-composer-target="birthdayMonth">
+          <% (1..12).each do |month| %>
+            <option value="<%= month %>"><%= t("date.month_names")[month] %></option>
+          <% end %>
+        </select>
+      </label>
+      <label><%= t("app.day") %>
+        <input type="number" name="birthday[day]" min="1" max="31" required data-composer-target="birthdayDay">
+      </label>
+    </div>
+    <label><%= t("app.year") %>
+      <input type="number" name="birthday[year]" min="1900" max="2100" inputmode="numeric" data-composer-target="birthdayYear">
+      <span class="field-hint"><%= t("app.year_hint") %></span>
+    </label>
+    <label><%= t("app.notes") %>
+      <textarea name="birthday[body]" rows="3" data-composer-target="birthdayBody"></textarea>
+    </label>
+    <div class="confirm-actions">
+      <button type="button" class="btn-dialog" data-action="composer#closeBirthday"><%= t("app.cancel") %></button>
+      <button type="submit" class="btn-dialog primary"><%= t("app.save") %></button>
+    </div>
+  <% end %>
+  <button type="button" class="btn-dialog danger dialog-delete" hidden data-composer-target="birthdayDelete" data-action="confirm#open" data-message="<%= t("js.delete_birthday_confirm") %>"><%= t("app.delete") %></button>
+</dialog>
+
+<dialog class="confirm-dialog form-dialog" data-holidays-target="box" data-action="click->holidays#backdrop">
+  <p class="dialog-heading"><%= t("app.holidays") %></p>
+  <p class="lede"><%= t("app.holidays_lede") %></p>
+  <%= form_with url: holidays_path, class: "auth-form" do %>
+    <%= hidden_field_tag :year, @grid.month.year %>
+    <%= hidden_field_tag :month, @grid.month.month %>
+    <%= hidden_field_tag :day, @grid.selected.day %>
+    <div class="holiday-packs">
+      <% User::HOLIDAY_PACKS.each do |code| %>
+        <label class="check-row">
+          <%= check_box_tag "countries[]", code, current_user.holiday_country_codes.include?(code), id: "holiday_#{code}" %>
+          <span><%= t("countries.#{code}") %></span>
+        </label>
+      <% end %>
+    </div>
+    <div class="confirm-actions">
+      <button type="button" class="btn-dialog" data-action="holidays#close"><%= t("app.cancel") %></button>
+      <button type="submit" class="btn-dialog primary"><%= t("app.save") %></button>
+    </div>
+  <% end %>
+</dialog>
+
+<dialog class="confirm-dialog" data-confirm-target="box" data-action="click->confirm#backdrop">
+  <p data-confirm-target="message"><%= t("js.delete_event_confirm") %></p>
+  <div class="confirm-actions">
+    <button type="button" class="btn-dialog" data-action="confirm#close"><%= t("app.cancel") %></button>
+    <%= link_to t("app.delete"), "#", class: "btn-dialog danger", data: { confirm_target: "destroy", turbo_method: :delete } %>
+  </div>
+</dialog>

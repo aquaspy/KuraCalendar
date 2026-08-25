@@ -1,0 +1,206 @@
+en:
+  pwa:
+    description: "A quiet personal calendar as a PWA."
+  titles:
+    app: "KuraCalendar"
+    login: "Sign in · KuraCalendar"
+    signup: "Create account · KuraCalendar"
+    password: "Change password · KuraCalendar"
+    lock: "Unlock · KuraCalendar"
+  auth:
+    sign_in: "Sign in"
+    sign_in_lede: "Your calendar lives on this server. Sign in to open it."
+    email: "Email"
+    password: "Password"
+    confirm_password: "Confirm password"
+    current_password: "Current password"
+    new_password: "New password"
+    confirm_new_password: "Confirm new password"
+    change_password: "Change password"
+    change_password_lede: "The new password is used to sign in and to unlock the app."
+    password_changed: "Password changed."
+    no_account: "No account?"
+    create_one: "Create one"
+    create_account: "Create account"
+    signup_lede: "There is no password recovery. If you lose it, ask whoever runs the server."
+    have_account: "Already have an account?"
+    theme: "Theme"
+    too_many: "Too many attempts. Wait a moment."
+    signup_closed: "New accounts are turned off on this server."
+  app:
+    unlock: "Unlock"
+    unlock_lede: "Signed in as %{email}. Enter your password to show the calendar."
+    lock: "Lock"
+    auto_lock_on: "Turn on auto lock"
+    auto_lock_off: "Turn off auto lock"
+    sign_out: "Sign out"
+    cancel: "Cancel"
+    delete: "Delete"
+    save: "Save"
+    more: "More"
+    today: "Today"
+    previous_month: "Previous month"
+    next_month: "Next month"
+    new_item: "Add"
+    new_event: "Event"
+    new_birthday: "Birthday"
+    edit_event: "Edit event"
+    edit_birthday: "Edit birthday"
+    empty_day: "Nothing on this day."
+    all_day: "All day"
+    title: "Title"
+    notes: "Notes"
+    starts: "Starts"
+    ends: "Ends"
+    start_time: "Start time"
+    end_time: "End time"
+    name: "Name"
+    month: "Month"
+    day: "Day"
+    year: "Year"
+    year_hint: "Optional. Used to show age."
+    holidays: "Holidays"
+    holidays_lede: "Pick the countries whose public holidays you want on the month."
+    holidays_on: "Show holidays"
+    holidays_off: "Hide holidays"
+    export: "Export"
+    import: "Import"
+    import_done: "Imported %{count} items."
+    import_invalid: "That file is not a valid KuraCalendar export."
+    offline: "You're offline. You can open months you've already viewed, but changes won't save."
+    overflow: "+%{count}"
+  countries:
+    BR: "Brazil"
+    US: "United States"
+    SI: "Slovenia"
+    CZ: "Czechia"
+  holidays:
+    br:
+      new_year: "New Year's Day"
+      carnival: "Carnival"
+      good_friday: "Good Friday"
+      easter: "Easter"
+      tiradentes: "Tiradentes"
+      labor: "Labour Day"
+      corpus_christi: "Corpus Christi"
+      independence: "Independence Day"
+      aparecida: "Our Lady of Aparecida"
+      finados: "All Souls' Day"
+      republic: "Republic Day"
+      black_awareness: "Black Awareness Day"
+      christmas: "Christmas"
+    us:
+      new_year: "New Year's Day"
+      mlk: "Martin Luther King Jr. Day"
+      presidents: "Presidents' Day"
+      memorial: "Memorial Day"
+      juneteenth: "Juneteenth"
+      independence: "Independence Day"
+      labor: "Labor Day"
+      columbus: "Columbus Day"
+      veterans: "Veterans Day"
+      thanksgiving: "Thanksgiving"
+      christmas: "Christmas"
+    si:
+      new_year: "New Year's Day"
+      new_year_2: "New Year holiday"
+      preseren: "Prešeren Day"
+      easter: "Easter"
+      easter_monday: "Easter Monday"
+      uprising: "Day of Uprising Against Occupation"
+      labor: "Labour Day"
+      labor_2: "Labour Day"
+      pentecost: "Whit Sunday"
+      statehood: "Statehood Day"
+      assumption: "Assumption"
+      reformation: "Reformation Day"
+      all_saints: "All Saints' Day"
+      christmas: "Christmas"
+      independence: "Independence and Unity Day"
+    cz:
+      new_year: "New Year's Day"
+      good_friday: "Good Friday"
+      easter_monday: "Easter Monday"
+      labor: "Labour Day"
+      liberation: "Liberation Day"
+      cyril_methodius: "Saints Cyril and Methodius"
+      jan_hus: "Jan Hus Day"
+      statehood: "Czech Statehood Day"
+      czechoslovak: "Independent Czechoslovak State Day"
+      freedom: "Struggle for Freedom and Democracy"
+      christmas_eve: "Christmas Eve"
+      christmas: "Christmas"
+      st_stephen: "St Stephen's Day"
+  date:
+    formats:
+      month: "%B %Y"
+      day: "%A, %B %-d"
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+  js:
+    invalid_credentials: "Invalid email or password."
+    wrong_password: "Wrong password."
+    theme_system: "Theme: system"
+    theme_light: "Theme: light"
+    theme_dark: "Theme: dark"
+    theme_switch: "click to switch"
+    delete_event_confirm: "Delete this event?"
+    delete_birthday_confirm: "Delete this birthday?"
+  helpers:
+    submit:
+      event:
+        create: "Add event"
+        update: "Save"
+      birthday:
+        create: "Add birthday"
+        update: "Save"
+  activerecord:
+    attributes:
+      user:
+        password: "Password"
+        password_confirmation: "Password confirmation"
+      event:
+        title: "Title"
+        body: "Notes"
+        starts_on: "Start date"
+        ends_on: "End date"
+        starts_at: "Start time"
+        ends_at: "End time"
+      birthday:
+        name: "Name"
+        month: "Month"
+        day: "Day"
+        year: "Year"
+        body: "Notes"
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              too_short: "is too short (minimum is %{count} characters)"
+              blank: "can't be blank"
+            password_confirmation:
+              confirmation: "doesn't match password"
+        event:
+          attributes:
+            title:
+              blank: "can't be blank"
+            starts_at:
+              blank: "can't be blank"
+            ends_on:
+              before_start: "can't be before the start date"
+              too_long: "can't span more than a year"
+            ends_at:
+              before_start: "can't be before the start time"
+            base:
+              too_many: "Two thousand events is enough."
+        birthday:
+          attributes:
+            name:
+              blank: "can't be blank"
+            day:
+              invalid: "isn't a real day in that month"
+            base:
+              too_many: "Five hundred birthdays is enough."
