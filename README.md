@@ -1,30 +1,39 @@
 # KuraCalendar
 
-A quiet personal calendar as a Rails 8 PWA. One SQLite file, no Redis.
+**A calendar that remembers people and days — not every meeting protocol on earth.**
 
-Mark days, keep yearly birthdays, and turn on public holidays for Brazil, the United States, Slovenia, and Czechia. Several people can have accounts on the same server. No CalDAV. No ICS as the database.
+KuraCalendar is a quiet personal calendar PWA. Mark days, keep yearly birthdays, turn on public holidays for the countries you care about. Several people can share one server with separate accounts. One SQLite file. No Redis. No CalDAV. No ICS-as-the-database.
 
-## Local
+---
 
-```bash
-bin/setup
-bin/dev
-```
+## Philosophy
 
-Open http://127.0.0.1:3000
+Calendar software tends to become infrastructure: invite RSVPs, free/busy, timezone hell, sync conflicts across three devices and a watch. That is a real product for workplaces. It is the wrong product for “when is mom’s birthday” and “don’t forget the long weekend.”
 
-A `config/master.key` is created by `rails new` and is gitignored. Keep that file. If you cloned this repo and have no key:
+KuraCalendar is the second kind.
 
-```bash
-rm -f config/credentials.yml.enc
-EDITOR=true bin/rails credentials:edit
-```
+- **Days you mark, birthdays that repeat.** Simple events with times when you need them. Birthdays that come back every year without ceremony.
+- **Holidays as packs, not plugins.** Flip on Brazil, the United States, Slovenia, and/or Czechia. Enough for a life that spans places — not a marketplace of calendar feeds.
+- **Your data stays a file.** Export JSON when you want a copy. Import adds; it does not overwrite your life by accident.
+- **No protocol cosplay.** If you need CalDAV and shared free/busy, use something built for that. This app is for *you*, on a VPS you trust.
+- **Same Kura shell.** Auth, idle lock, PWA offline month views, Compose on localhost.
 
-That writes a new `config/master.key`. Do not commit it.
+Sister apps: [KuraNotes](https://github.com/aquaspy/KuraNotes), [KuraChat](https://github.com/aquaspy/KuraChat), [KuraHome](https://github.com/aquaspy/KuraHome), [KuraSpend](https://github.com/aquaspy/KuraSpend). Each keeps its own volume — a calendar should not share a database with chat history.
 
-## VPS (Docker Compose)
+---
 
-On the server, with Docker installed:
+## What you get
+
+- Multi-user accounts on one instance
+- Month (and day) views with events and birthdays
+- Holiday packs: **BR**, **US**, **SI**, **CZ**
+- JSON export / import (import adds rows; it does not replace)
+- Offline: reopen months you already opened; edits wait until you are back
+- Sign-out wipes the offline cache
+
+---
+
+## Self-host (Docker Compose)
 
 ```bash
 git clone https://github.com/aquaspy/KuraCalendar.git
@@ -32,14 +41,14 @@ cd KuraCalendar
 cp .env.example .env
 ```
 
-Edit `.env`. At minimum set:
+Edit `.env`. At minimum:
 
 ```bash
-SECRET_KEY_BASE=$(openssl rand -hex 64)   # paste the output into .env
+SECRET_KEY_BASE=          # paste: openssl rand -hex 64
 KURA_HOST=calendar.example.com
-SIGNUP_ENABLED=true                       # first account, then false
-FORCE_SSL=false                           # true once Caddy/nginx terminates HTTPS
-BIND=127.0.0.1:3003                       # 3003 if Notes/Chat/Home already took 3000+
+SIGNUP_ENABLED=true       # first account, then false
+FORCE_SSL=false           # true once HTTPS terminates in front
+BIND=127.0.0.1:3003       # 3003 if Notes/Chat/Home already took 3000+
 ```
 
 Then:
@@ -48,10 +57,10 @@ Then:
 docker compose up -d --build
 ```
 
-Create the first account in the browser (http://127.0.0.1:3003), **or** from the shell:
+Create the first account in the browser (`http://127.0.0.1:3003`), or:
 
 ```bash
-docker compose exec web bin/rails kura:create EMAIL=you@x.com PASSWORD='at-least-8'
+docker compose exec web bin/rails kura:create EMAIL=you@example.com PASSWORD='at-least-8'
 ```
 
 Lock signup:
@@ -62,47 +71,24 @@ SIGNUP_ENABLED=false
 docker compose up -d
 ```
 
-`docker compose restart` does **not** reload `.env`. Use `up -d`.
+> **Important:** `docker compose restart` does **not** reload `.env`. Use `docker compose up -d`.
 
-### Secret
+### Secrets
 
 Pick **one**. You do not need both.
 
-**Compose (recommended on a VPS):**
+| Approach | When | How |
+| --- | --- | --- |
+| **`SECRET_KEY_BASE`** (recommended) | Compose / VPS | `openssl rand -hex 64` → `.env` |
+| **`RAILS_MASTER_KEY`** | Rails credentials | Regenerate with `EDITOR=true bin/rails credentials:edit`, put `config/master.key` in `.env` |
 
-```bash
-openssl rand -hex 64
-```
+Losing the key does not lose events — only session cookies.
 
-Put the output in `.env` as `SECRET_KEY_BASE`. No `master.key` required.
+### Reverse proxy (Caddy or nginx)
 
-**Rails credentials** (if you already have a key, or want `rails credentials:edit`):
+Nothing is bundled. Point your proxy at `BIND`, set `FORCE_SSL=true`, then `docker compose up -d`.
 
-```bash
-rm -f config/credentials.yml.enc
-EDITOR=true bin/rails credentials:edit
-cat config/master.key
-```
-
-Put that value in `.env` as `RAILS_MASTER_KEY`. A random hex will not decrypt the `credentials.yml.enc` that ships in git — generate a new pair as above, or use `SECRET_KEY_BASE` instead.
-
-Losing the key does not lose events. It only invalidates session cookies. Generate a new one and users sign in again.
-
-### Users on the server
-
-```bash
-docker compose exec web bin/rails kura:users
-docker compose exec web bin/rails kura:create EMAIL=you@x.com PASSWORD='at-least-8'
-docker compose exec web bin/rails kura:password EMAIL=you@x.com PASSWORD='new-secret'
-```
-
-`kura:password` is the admin reset. There is no email recovery.
-
-### Proxy (Caddy or nginx)
-
-Nothing is bundled. The app listens on `127.0.0.1:3003` (or whatever you set in `BIND`) and does not bind 80/443. Point your own Caddy or nginx at that address, set `FORCE_SSL=true` in `.env`, then `docker compose up -d`.
-
-Caddy:
+**Caddy:**
 
 ```
 calendar.example.com {
@@ -110,7 +96,7 @@ calendar.example.com {
 }
 ```
 
-nginx:
+**nginx:**
 
 ```
 location / {
@@ -119,30 +105,79 @@ location / {
   proxy_set_header Host $host;
   proxy_set_header X-Forwarded-Proto $scheme;
 }
+```
 
 If `BIND` is another port, proxy to that port instead.
+
+### Users on the server
+
+No email recovery — `kura:password` is the admin reset:
+
+```bash
+docker compose exec web bin/rails kura:users
+docker compose exec web bin/rails kura:create EMAIL=you@example.com PASSWORD='at-least-8'
+docker compose exec web bin/rails kura:password EMAIL=you@example.com PASSWORD='new-secret'
 ```
 
 ### Backup
 
-Events and birthdays live in the `kura_calendar_data` volume (`storage/production.sqlite3`). Back that up.
+Events and birthdays live in the `kura_calendar_data` volume (`storage/production.sqlite3`).
 
 ```bash
 docker compose exec web tar -C /rails/storage -cf - . > kuracalendar-backup.tar
 ```
 
-Offline, the PWA can reopen months you already opened while online. Adding or editing waits until you are back. Sign out wipes the cache so a second person on the same browser cannot read the previous user’s calendar offline.
+### Shared browsers
 
-Shared browsers: Sign out **and** wait for the cache wipe.
+Sign out **and** wait for the cache wipe.
 
-Export downloads a JSON file of events and birthdays. Import accepts that same JSON. It does not replace existing rows; it adds them.
+---
 
-## Keys
+## Import / export
 
-| Env | What |
+**Export** downloads JSON of events and birthdays.
+
+**Import** accepts that same JSON. It **adds** rows; it does not replace existing ones.
+
+---
+
+## Local development
+
+```bash
+bin/setup
+bin/dev
+```
+
+Open http://127.0.0.1:3000
+
+If you cloned without a `master.key`:
+
+```bash
+rm -f config/credentials.yml.enc
+EDITOR=true bin/rails credentials:edit
+```
+
+Do not commit `config/master.key`.
+
+---
+
+## Environment
+
+| Variable | What it does |
 | --- | --- |
 | `SECRET_KEY_BASE` | Session cookies (Compose). `openssl rand -hex 64` |
-| `SIGNUP_ENABLED` | Public signup form. Turn off after the first account |
+| `SIGNUP_ENABLED` | Public signup. Turn off after the first account |
 | `FORCE_SSL` | `true` when Caddy/nginx terminates HTTPS |
 | `KURA_HOST` | Public hostname |
 | `BIND` | Default `127.0.0.1:3003` |
+
+---
+
+## Sister apps
+
+| App | Role |
+| --- | --- |
+| [KuraNotes](https://github.com/aquaspy/KuraNotes) | Private notes |
+| [KuraChat](https://github.com/aquaspy/KuraChat) | Private chat with Grok |
+| [KuraHome](https://github.com/aquaspy/KuraHome) | Quiet start-page / homepage |
+| [KuraSpend](https://github.com/aquaspy/KuraSpend) | Subscriptions & daily spend |
