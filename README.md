@@ -16,7 +16,7 @@ KuraCalendar is the second kind.
 - **Holidays as packs, not plugins.** Flip on Brazil, the United States, Slovenia, and/or Czechia. Enough for a life that spans places — not a marketplace of calendar feeds.
 - **Your data stays a file.** Export JSON when you want a copy. Import adds; it does not overwrite your life by accident.
 - **No protocol cosplay.** If you need CalDAV and shared free/busy, use something built for that. This app is for *you*, on a VPS you trust.
-- **Same Kura shell.** Auth, idle lock, PWA offline month views, Compose on localhost.
+- **Same Kura shell.** Auth, idle lock (per device), PWA offline month views, Compose on localhost.
 
 Sister apps: [KuraNotes](https://github.com/aquaspy/KuraNotes), [KuraChat](https://github.com/aquaspy/KuraChat), [KuraHome](https://github.com/aquaspy/KuraHome), [KuraSpend](https://github.com/aquaspy/KuraSpend). Each keeps its own volume — a calendar should not share a database with chat history.
 
