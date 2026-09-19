@@ -42,6 +42,7 @@ module Api
         return render_not_found unless birthday
 
         birthday.destroy
+        Birthday.reclaim_space
         head :no_content
       end
 

@@ -16,10 +16,6 @@ class Birthday < ApplicationRecord
   validate :day_exists
   validate :within_cap, on: :create
 
-  def self.reclaim_space
-    connection.execute("VACUUM")
-  end
-
   def observed_on?(date)
     return false if date.blank?
     if month == 2 && day == 29

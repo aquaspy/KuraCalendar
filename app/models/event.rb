@@ -20,10 +20,6 @@ class Event < ApplicationRecord
     where("starts_on <= ? AND ends_on >= ?", to, from).order(:starts_on, :id)
   }
 
-  def self.reclaim_space
-    connection.execute("VACUUM")
-  end
-
   def time_label
     return if all_day?
 

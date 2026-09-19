@@ -24,4 +24,11 @@ class BirthdayTest < ActiveSupport::TestCase
     refute birthday.valid?
     assert birthday.errors[:day].any?
   end
+
+  test "reclaim_space never breaks the request" do
+    Birthday.reclaim_space
+    Birthday.transaction do
+      assert_nil Birthday.reclaim_space
+    end
+  end
 end

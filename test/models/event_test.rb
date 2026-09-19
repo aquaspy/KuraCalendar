@@ -34,4 +34,11 @@ class EventTest < ActiveSupport::TestCase
     refute event.valid?
     assert event.errors[:ends_on].any?
   end
+
+  test "reclaim_space never breaks the request" do
+    Event.reclaim_space
+    Event.transaction do
+      assert_nil Event.reclaim_space
+    end
+  end
 end

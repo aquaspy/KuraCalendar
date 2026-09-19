@@ -44,6 +44,7 @@ module Api
         return render_not_found unless event
 
         event.destroy
+        Event.reclaim_space
         head :no_content
       end
 
