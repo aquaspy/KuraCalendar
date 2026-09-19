@@ -49,6 +49,10 @@ class Birthday < ApplicationRecord
     }
   end
 
+  def as_api
+    as_export.merge("id" => id)
+  end
+
   private
     def normalize
       self.name = name.to_s.strip

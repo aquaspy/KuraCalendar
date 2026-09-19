@@ -13,6 +13,14 @@ Rails.application.routes.draw do
   post "unlock", to: "locks#create"
   post "lock", to: "locks#lock", as: :lock
   resource :password, only: %i[edit update]
+  resources :api_tokens, only: %i[index create destroy]
+
+  namespace :api do
+    namespace :v1 do
+      resources :events, only: %i[index show create update destroy]
+      resources :birthdays, only: %i[index show create update destroy]
+    end
+  end
 
   get  "export", to: "calendar#export", as: :export
   post "import", to: "calendar#import", as: :import

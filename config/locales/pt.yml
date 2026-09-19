@@ -7,6 +7,23 @@ pt:
     signup: "Criar conta · KuraCalendar"
     password: "Mudar senha · KuraCalendar"
     lock: "Desbloquear · KuraCalendar"
+    tokens: "Tokens de API · KuraCalendar"
+  api:
+    invalid_date: "As datas devem usar AAAA-MM-DD."
+  tokens:
+    title: "Tokens de API"
+    lede: "Tokens permitem que agentes de IA e outros apps gerenciem seu calendário pela API. Um token tem acesso total aos eventos e aniversários e continua valendo com o app bloqueado. Trate como uma senha."
+    name_label: "Nome"
+    name_placeholder: "ex.: Hermes Agent"
+    create: "Gerar token"
+    copy_now: "Copie este token agora. Ele não será mostrado de novo."
+    existing: "Tokens ativos"
+    empty: "Nenhum token ainda."
+    last_used: "Último uso"
+    never_used: "Nunca"
+    revoke: "Revogar"
+    revoke_confirm: "Revogar este token? Os apps conectados vão parar de funcionar."
+    revoked: "Token revogado."
   auth:
     sign_in: "Entrar"
     sign_in_lede: "Seu calendário fica neste servidor. Entre para abri-lo."
@@ -142,6 +159,12 @@ pt:
     day_names: [domingo, segunda-feira, terça-feira, quarta-feira, quinta-feira, sexta-feira, sábado]
     month_names: [~, janeiro, fevereiro, março, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro]
     abbr_month_names: [~, jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez]
+  time:
+    formats:
+      short: "%d/%m, %H:%M"
+  datetime:
+    formats:
+      short: "%d/%m, %H:%M"
   js:
     invalid_credentials: "Email ou senha inválidos."
     wrong_password: "Senha incorreta."
@@ -164,6 +187,8 @@ pt:
       user:
         password: "Senha"
         password_confirmation: "Confirmação da senha"
+      api_token:
+        name: "Nome"
       event:
         title: "Título"
         body: "Notas"
@@ -186,6 +211,12 @@ pt:
               blank: "não pode ficar em branco"
             password_confirmation:
               confirmation: "não confere com a senha"
+        api_token:
+          attributes:
+            name:
+              blank: "não pode ficar em branco"
+            base:
+              too_many: "Dez tokens bastam. Revogue um antes."
         event:
           attributes:
             title:

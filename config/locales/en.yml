@@ -7,6 +7,23 @@ en:
     signup: "Create account · KuraCalendar"
     password: "Change password · KuraCalendar"
     lock: "Unlock · KuraCalendar"
+    tokens: "API tokens · KuraCalendar"
+  api:
+    invalid_date: "Dates must use YYYY-MM-DD."
+  tokens:
+    title: "API tokens"
+    lede: "Tokens let AI agents and other apps manage your calendar through the API. A token has full access to your events and birthdays, and keeps working while the app is locked. Treat it like a password."
+    name_label: "Name"
+    name_placeholder: "e.g. Hermes Agent"
+    create: "Generate token"
+    copy_now: "Copy this token now. It will not be shown again."
+    existing: "Active tokens"
+    empty: "No tokens yet."
+    last_used: "Last used"
+    never_used: "Never"
+    revoke: "Revoke"
+    revoke_confirm: "Revoke this token? Connected apps will stop working."
+    revoked: "Token revoked."
   auth:
     sign_in: "Sign in"
     sign_in_lede: "Your calendar lives on this server. Sign in to open it."
@@ -135,6 +152,12 @@ en:
     formats:
       month: "%B %Y"
       day: "%A, %B %-d"
+  time:
+    formats:
+      short: "%b %-d, %H:%M"
+  datetime:
+    formats:
+      short: "%b %-d, %H:%M"
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
     day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
     month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
@@ -161,6 +184,8 @@ en:
       user:
         password: "Password"
         password_confirmation: "Password confirmation"
+      api_token:
+        name: "Name"
       event:
         title: "Title"
         body: "Notes"
@@ -183,6 +208,12 @@ en:
               blank: "can't be blank"
             password_confirmation:
               confirmation: "doesn't match password"
+        api_token:
+          attributes:
+            name:
+              blank: "can't be blank"
+            base:
+              too_many: "Ten tokens is enough. Revoke one first."
         event:
           attributes:
             title:

@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_secure_password
   has_many :events, dependent: :destroy
   has_many :birthdays, dependent: :destroy
+  has_many :api_tokens, dependent: :destroy
 
   normalizes :email, with: -> { it.strip.downcase }
 
