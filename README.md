@@ -28,6 +28,7 @@ Sister apps: [KuraNotes](https://github.com/aquaspy/KuraNotes), [KuraChat](https
 - Month (and day) views with events and birthdays
 - Holiday packs: **BR**, **US**, **SI**, **CZ**
 - JSON export / import (import adds rows; it does not replace)
+- API tokens + JSON API for AI agents (see API.md)
 - Offline: reopen months you already opened; edits wait until you are back
 - Sign-out wipes the offline cache
 
@@ -144,6 +145,12 @@ YJIT stays **on**. Rails 8.1 enables it in production via `config.yjit`; the ima
 **Export** downloads JSON of events and birthdays.
 
 **Import** accepts that same JSON. It **adds** rows; it does not replace existing ones.
+
+---
+
+## AI agents (API)
+
+KuraCalendar is ready for the agentic era: mint a token under **More → API tokens**, hand it to OpenClaw, Hermes Agent, or any HTTP client, and it can read and manage events and birthdays — even while the app is locked. See [API.md](API.md) for endpoints, curl examples, and a setup snippet.
 
 ---
 
