@@ -11,7 +11,7 @@
 
 <dialog class="confirm-dialog form-dialog" data-composer-target="eventBox" data-action="click->composer#backdrop">
   <p class="dialog-heading" data-composer-target="eventHeading"><%= t("app.new_event") %></p>
-  <%= form_with url: events_path, class: "auth-form", data: { composer_target: "eventForm" } do %>
+  <%= form_with url: events_path, class: "auth-form", data: { composer_target: "eventForm", action: "input->composer#store turbo:submit-end->composer#submitted" } do %>
     <input type="hidden" name="_method" value="post" data-composer-target="eventMethod">
     <label><%= t("app.title") %>
       <input type="text" name="event[title]" required maxlength="200" data-composer-target="eventTitle">
@@ -48,7 +48,7 @@
 
 <dialog class="confirm-dialog form-dialog" data-composer-target="birthdayBox" data-action="click->composer#backdrop">
   <p class="dialog-heading" data-composer-target="birthdayHeading"><%= t("app.new_birthday") %></p>
-  <%= form_with url: birthdays_path, class: "auth-form", data: { composer_target: "birthdayForm" } do %>
+  <%= form_with url: birthdays_path, class: "auth-form", data: { composer_target: "birthdayForm", action: "input->composer#store turbo:submit-end->composer#submitted" } do %>
     <input type="hidden" name="_method" value="post" data-composer-target="birthdayMethod">
     <input type="hidden" name="return_year" value="<%= cell.date.year %>">
     <label><%= t("app.name") %>
