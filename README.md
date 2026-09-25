@@ -2,7 +2,7 @@
 
 **A calendar that remembers people and days — not every meeting protocol on earth.**
 
-KuraCalendar is a quiet personal calendar PWA. Mark days, keep yearly birthdays, turn on public holidays for the countries you care about. Several people can share one server with separate accounts. One SQLite file. No Redis. No CalDAV. No ICS-as-the-database.
+KuraCalendar is a quiet personal calendar PWA. Mark days, keep yearly birthdays, turn on public holidays for the countries you care about. Several people can share one server with separate accounts. One static Go binary (~14 MB, ~20 MB RAM) serves the whole app on a single SQLite file. No Redis. No CalDAV. No ICS-as-the-database.
 
 ---
 
@@ -26,15 +26,20 @@ Sister apps: [KuraNotes](https://github.com/aquaspy/KuraNotes), [KuraChat](https
 
 - Multi-user accounts on one instance
 - Month (and day) views with events and birthdays
+- Recurring events (daily, weekly, monthly, yearly, optional end date) and emoji on events and birthdays
 - Holiday packs: **BR**, **US**, **SI**, **CZ**
 - JSON export / import (import adds rows; it does not replace)
 - API tokens + JSON API for AI agents (see API.md)
 - Offline: reopen months you already opened; edits wait until you are back
-- Sign-out wipes the offline cache
+- Long-lived sessions with an optional idle lock (**per device**, not synced in the account DB); sign-out wipes the offline cache
+
+**What you do not get (on purpose):** CalDAV, shared calendars, invites, E2E encryption, outbound email password reset, or a bundled reverse proxy. You bring your own Caddy or nginx.
 
 ---
 
 ## Self-host (Docker Compose)
+
+You need Docker on a VPS (or a home box). The app binds to localhost only — port 80/443 stay free for your proxy.
 
 ```bash
 git clone https://github.com/aquaspy/KuraCalendar.git
@@ -45,9 +50,8 @@ cp .env.example .env
 Edit `.env`. At minimum:
 
 ```bash
-SECRET_KEY_BASE=          # paste: openssl rand -hex 64
 KURA_HOST=calendar.example.com
-SIGNUP_ENABLED=true       # first account, then false
+SIGNUP_ENABLED=true       # first account, then flip to false
 FORCE_SSL=false           # true once HTTPS terminates in front
 BIND=127.0.0.1:3003       # 3003 if Notes/Chat/Home already took 3000+
 ```
@@ -58,13 +62,13 @@ Then:
 docker compose up -d --build
 ```
 
-Create the first account in the browser (`http://127.0.0.1:3003`), or:
+Create the first account in the browser (`http://127.0.0.1:3003`) — **or** from the shell:
 
 ```bash
-docker compose exec web bin/rails kura:create EMAIL=you@example.com PASSWORD='at-least-8'
+docker compose exec -e EMAIL=you@example.com -e PASSWORD='at-least-8' web ./kuracalendar create
 ```
 
-Lock signup:
+Lock public signup so the internet cannot mint accounts on your box:
 
 ```bash
 # in .env
@@ -72,22 +76,33 @@ SIGNUP_ENABLED=false
 docker compose up -d
 ```
 
-> **Important:** `docker compose restart` does **not** reload `.env`. Use `docker compose up -d`.
+> **Important:** `docker compose restart` does **not** reload `.env`. Always use `docker compose up -d` after changing environment variables.
 
-### Secrets
+There are no cookie-signing secrets to manage: sessions are opaque random ids in SQLite. Losing the database loses everything; losing anything else loses nothing.
 
-Pick **one**. You do not need both.
+### Coming from the Rails version
 
-| Approach | When | How |
-| --- | --- | --- |
-| **`SECRET_KEY_BASE`** (recommended) | Compose / VPS | `openssl rand -hex 64` → `.env` |
-| **`RAILS_MASTER_KEY`** | Rails credentials | Regenerate with `EDITOR=true bin/rails credentials:edit`, put `config/master.key` in `.env` |
+The Go app reads its own `kuracalendar.sqlite3`, so the Rails database is imported once:
 
-Losing the key does not lose events — only session cookies.
+```bash
+# 1. Back up the old volume.
+docker compose exec web tar -C /rails/storage -cf - . > kuracalendar-rails-backup.tar
+
+# 2. Deploy the Go image (same kura_calendar_data volume, now mounted at /data).
+docker compose up -d --build
+
+# 3. Import the old database into the new layout.
+docker compose exec web ./kuracalendar import /data/production.sqlite3
+
+# 4. Verify in the browser, then delete the legacy file:
+#    /data/production.sqlite3*.
+```
+
+Users keep their passwords, holiday packs, events, birthdays, and API tokens (same `kura_…` values — agents keep working). Everyone signs in again (sessions are not imported).
 
 ### Reverse proxy (Caddy or nginx)
 
-Nothing is bundled. Point your proxy at `BIND`, set `FORCE_SSL=true`, then `docker compose up -d`.
+Nothing is bundled. Point your proxy at whatever `BIND` you chose, set `FORCE_SSL=true`, then `docker compose up -d`.
 
 **Caddy:**
 
@@ -108,35 +123,27 @@ location / {
 }
 ```
 
-If `BIND` is another port, proxy to that port instead.
-
 ### Users on the server
 
-No email recovery — `kura:password` is the admin reset:
+There is no email recovery. Reset passwords from the box:
 
 ```bash
-docker compose exec web bin/rails kura:users
-docker compose exec web bin/rails kura:create EMAIL=you@example.com PASSWORD='at-least-8'
-docker compose exec web bin/rails kura:password EMAIL=you@example.com PASSWORD='new-secret'
+docker compose exec web ./kuracalendar users
+docker compose exec -e EMAIL=you@example.com -e PASSWORD='at-least-8' web ./kuracalendar create
+docker compose exec -e EMAIL=you@example.com -e PASSWORD='new-secret' web ./kuracalendar password
 ```
 
 ### Backup
 
-Events and birthdays live in the `kura_calendar_data` volume (`storage/production.sqlite3`).
+Events and birthdays live in the `kura_calendar_data` volume (`/data/kuracalendar.sqlite3`). Back that up.
 
 ```bash
-docker compose exec web tar -C /rails/storage -cf - . > kuracalendar-backup.tar
+docker compose exec web tar -C /data -cf - . > kuracalendar-backup.tar
 ```
 
 ### Shared browsers
 
-Sign out **and** wait for the cache wipe.
-
-### Runtime (queue & YJIT)
-
-Solid Queue is **off** here. This app has no durable background jobs, so production Active Job uses the in-process `:async` adapter and Compose does not set `SOLID_QUEUE_IN_PUMA`. That keeps the extra queue processes from sitting in RAM. [KuraChat](https://github.com/aquaspy/KuraChat) still runs Solid Queue for completion jobs.
-
-YJIT stays **on**. Rails 8.1 enables it in production via `config.yjit`; the image also sets `RUBY_YJIT_ENABLE=1`. Leave it on — the CPU win is worth the modest RSS on a personal box.
+Sign out **and** wait for the cache wipe. Until then, another person who opens the PWA offline can see cached pages from the previous user.
 
 ---
 
@@ -144,7 +151,7 @@ YJIT stays **on**. Rails 8.1 enables it in production via `config.yjit`; the ima
 
 **Export** downloads JSON of events and birthdays.
 
-**Import** accepts that same JSON. It **adds** rows; it does not replace existing ones.
+**Import** accepts that same JSON (a Rails-era export works too). It **adds** rows; it does not replace existing ones. Cap is 500 events + 500 birthdays per import; rows that fail validation are skipped and not counted.
 
 ---
 
@@ -156,21 +163,27 @@ KuraCalendar is ready for the agentic era: mint a token under **More → API tok
 
 ## Local development
 
-```bash
-bin/setup
-bin/dev
-```
-
-Open http://127.0.0.1:3000
-
-If you cloned without a `master.key`:
+You need Go 1.27+, plus the `templ` and `tailwindcss` binaries:
 
 ```bash
-rm -f config/credentials.yml.enc
-EDITOR=true bin/rails credentials:edit
+go install github.com/a-h/templ/cmd/templ@latest
+# tailwindcss: https://github.com/tailwindlabs/tailwindcss/releases
 ```
 
-Do not commit `config/master.key`.
+Then:
+
+```bash
+templ generate
+tailwindcss --input web/static/css/input.css --output web/static/css/app.css
+go run ./cmd/kuracalendar serve
+```
+
+Open http://127.0.0.1:3003
+
+```bash
+go test ./...   # suite: store, holidays, grid, importer, HTTP flows, API
+go vet ./...
+```
 
 ---
 
@@ -178,11 +191,11 @@ Do not commit `config/master.key`.
 
 | Variable | What it does |
 | --- | --- |
-| `SECRET_KEY_BASE` | Session cookies (Compose). `openssl rand -hex 64` |
-| `SIGNUP_ENABLED` | Public signup. Turn off after the first account |
+| `SIGNUP_ENABLED` | Public signup form. Turn off after the first account |
 | `FORCE_SSL` | `true` when Caddy/nginx terminates HTTPS |
-| `KURA_HOST` | Public hostname |
+| `KURA_HOST` | Public hostname (comma-separated if several) |
 | `BIND` | Default `127.0.0.1:3003` |
+| `DATA_DIR` | Where `kuracalendar.sqlite3` lives. Default `storage` (`/data` in Docker) |
 
 ---
 
@@ -191,6 +204,8 @@ Do not commit `config/master.key`.
 | App | Role |
 | --- | --- |
 | [KuraNotes](https://github.com/aquaspy/KuraNotes) | Private notes |
-| [KuraChat](https://github.com/aquaspy/KuraChat) | Private chat with Grok |
+| [KuraChat](https://github.com/aquaspy/KuraChat) | Private chat with your model |
 | [KuraHome](https://github.com/aquaspy/KuraHome) | Quiet start-page / homepage |
 | [KuraSpend](https://github.com/aquaspy/KuraSpend) | Subscriptions & daily spend |
+
+Same spirit. Separate databases. Your stack, your rules.
